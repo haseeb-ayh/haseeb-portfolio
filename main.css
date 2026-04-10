@@ -777,6 +777,171 @@ section,
   border: 2px solid var(--accent-color);
 }
 
+ /* ===== Projects Section Styles ===== */
+    .projects-section {
+      padding: 60px 0;
+    }
+ 
+    .project-card {
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+ 
+    .project-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    }
+ 
+    .project-card-header {
+      background: linear-gradient(135deg, #0563bb 0%, #034f96 100%);
+      padding: 28px 24px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+ 
+    .project-card-header::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.07);
+    }
+ 
+    .project-card-header.placeholder-header {
+      background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    }
+ 
+    .project-icon {
+      font-size: 2.2rem;
+      color: #fff;
+      margin-bottom: 10px;
+      display: block;
+    }
+ 
+    .project-card-header h4 {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0;
+    }
+ 
+    .project-card-body {
+      padding: 22px 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+ 
+    .project-card-body p {
+      color: #555;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      flex: 1;
+    }
+ 
+    .project-tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 14px 0 18px;
+    }
+ 
+    .tech-tag {
+      background: #e8f1fb;
+      color: #0563bb;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.3px;
+    }
+ 
+    .tech-tag.placeholder-tag {
+      background: #f0f0f0;
+      color: #888;
+    }
+ 
+    .project-links {
+      display: flex;
+      gap: 10px;
+    }
+ 
+    .project-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 7px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+ 
+    .btn-github {
+      background: #24292e;
+      color: #fff;
+    }
+ 
+    .btn-github:hover {
+      background: #0563bb;
+      color: #fff;
+    }
+ 
+    .btn-live {
+      background: transparent;
+      color: #0563bb;
+      border: 1.5px solid #0563bb;
+    }
+ 
+    .btn-live:hover {
+      background: #0563bb;
+      color: #fff;
+    }
+ 
+    .btn-coming-soon {
+      background: #f0f0f0;
+      color: #aaa;
+      cursor: not-allowed;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 7px 16px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+ 
+    .project-status-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 20px;
+      margin-top: 6px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+ 
+    .badge-completed {
+      background: #d4edda;
+      color: #155724;
+    }
+ 
+    .badge-coming-soon {
+      background: #fff3cd;
+      color: #856404;
+    }
+
 /*--------------------------------------------------------------
 # Portfolio Section
 --------------------------------------------------------------*/

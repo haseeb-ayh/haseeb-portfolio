@@ -1,8 +1,10 @@
 import React from 'react';
 import { Briefcase, GraduationCap, Calendar, MapPin, Building2, CheckCircle2 } from 'lucide-react';
-import { workExperience, educationData } from '../data/portfolioData';
+import { usePortfolioData } from '../context/PortfolioDataContext';
 
 export default function Experience() {
+  const { workExperience, educationData } = usePortfolioData();
+
   return (
     <section id="experience" className="section-container">
       <div className="container">
@@ -54,51 +56,52 @@ export default function Experience() {
                   </div>
                 </div>
 
-                <div className="journey-body">
-                  <p className="job-summary-text">{job.summary}</p>
-                  
+                <p className="journey-summary">{job.summary}</p>
+
+                {job.bullets && job.bullets.length > 0 && (
                   <ul className="journey-bullets">
                     {job.bullets.map((b, bIdx) => (
                       <li key={bIdx}>
-                        <span className="bullet-dot text-blue">›</span>
+                        <CheckCircle2 size={14} className="text-blue bullet-icon" />
                         <span>{b}</span>
                       </li>
                     ))}
                   </ul>
+                )}
 
-                  {/* Tech stack tags */}
-                  <div className="job-tech-strip">
-                    <span className="tech-strip-label">Tech:</span>
-                    <div className="tech-strip-pills">
+                {job.tech && job.tech.length > 0 && (
+                  <div className="journey-tech-strip">
+                    <span className="tech-strip-label">Applied Technologies:</span>
+                    <div className="journey-tech-tags">
                       {job.tech.map((t, tIdx) => (
-                        <span key={tIdx} className="tech-badge-chip">
+                        <span key={tIdx} className="tech-tag-chip">
                           {t}
                         </span>
                       ))}
                     </div>
                   </div>
-                </div>
+                )}
 
               </div>
             ))}
           </div>
         </div>
 
-        {/* Education Area */}
-        <div className="exp-group-wrapper education-group">
+        {/* Education & Training Area */}
+        <div className="exp-group-wrapper mt-5">
           <h3 className="group-sub-title">
             <GraduationCap size={16} className="text-blue" />
-            <span>Education</span>
+            <span>Education &amp; Intensive Training</span>
           </h3>
 
-          <div className="journey-cards-stack">
+          <div className="journey-cards-grid">
             {educationData.map((edu, idx) => (
-              <div key={idx} className="journey-card">
+              <div key={idx} className="journey-card edu-card">
                 
                 <div className="journey-card-header">
                   <div className="journey-title-wrap">
-                    <div className="journey-icon-box">
-                      <GraduationCap size={16} />
+                    <div className="journey-icon-box edu-icon">
+                      <GraduationCap size={18} />
                     </div>
                     <div>
                       <h4 className="journey-role">{edu.programme}</h4>
@@ -107,7 +110,6 @@ export default function Experience() {
                   </div>
 
                   <div className="journey-meta-pills">
-                    <span className="journey-badge">{edu.note}</span>
                     <span className="journey-period">
                       <Calendar size={12} />
                       <span>{edu.period}</span>
@@ -119,16 +121,18 @@ export default function Experience() {
                   </div>
                 </div>
 
-                <div className="journey-body">
+                {edu.note && <span className="edu-note-pill">{edu.note}</span>}
+
+                {edu.highlights && edu.highlights.length > 0 && (
                   <ul className="journey-bullets">
                     {edu.highlights.map((h, hIdx) => (
                       <li key={hIdx}>
-                        <span className="bullet-dot">•</span>
+                        <span className="edu-dot"></span>
                         <span>{h}</span>
                       </li>
                     ))}
                   </ul>
-                </div>
+                )}
 
               </div>
             ))}

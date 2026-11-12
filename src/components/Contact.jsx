@@ -11,9 +11,10 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon, TwitterIcon, InstagramIcon } from './Icons';
-import { personalInfo } from '../data/portfolioData';
+import { usePortfolioData } from '../context/PortfolioDataContext';
 
 export default function Contact() {
+  const { personalInfo } = usePortfolioData();
   const [formData, setFormData] = useState({
     name: '',
     email: '',

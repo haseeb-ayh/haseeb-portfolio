@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ArrowUpRight, Code2, Sun, Moon } from 'lucide-react';
+import { Menu, X, ArrowUpRight, Code2, Sun, Moon, FileText, Download, Shield } from 'lucide-react';
 import { GithubIcon } from './Icons';
-import { personalInfo } from '../data/portfolioData';
+import { usePortfolioData } from '../context/PortfolioDataContext';
 import { useTheme } from '../context/useTheme';
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
+  const { personalInfo, cvData, openAdmin } = usePortfolioData();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
@@ -43,6 +44,18 @@ export default function Navbar() {
     { name: 'Contact', href: '#contact' },
   ];
 
+  const handleCvClick = (e) => {
+    if (!cvData.url) {
+      e.preventDefault();
+      const proceed = window.confirm(
+        'No CV / Resume is linked yet. Would you like to open Admin CMS to upload your updated CV PDF now?'
+      );
+      if (proceed) {
+        openAdmin();
+      }
+    }
+  };
+
   return (
     <header className={`navbar-header ${isScrolled ? 'scrolled' : ''}`}>
       <div className="container nav-container">
@@ -50,7 +63,13 @@ export default function Navbar() {
         {/* Brand */}
         <a href="#home" className="nav-brand">
           <div className="brand-avatar-mini">
-            <img src={personalInfo.images.avatar} alt="Abdul Haseeb" />
+            <img 
+              src={personalInfo.images?.avatar || '/images/profile.jpg'} 
+              alt={personalInfo.name} 
+              onError={(e) => {
+                e.target.src = '/image/WhatsApp Image 2025-11-14 at 4.57.00 PM.jpeg';
+              }}
+            />
           </div>
           <div className="brand-text">
             <span className="brand-name">haseeb</span>
@@ -81,6 +100,20 @@ export default function Navbar() {
         {/* Right Actions */}
         <div className="nav-actions">
           
+          {/* Resume Button in Navbar */}
+          <a
+            href={cvData.url || '#'}
+            download={cvData.fileName || 'Abdul_Haseeb_MERN_Resume.pdf'}
+            target="_blank"
+            rel="noreferrer"
+            onClick={handleCvClick}
+            className="btn btn-outline btn-sm nav-cv-btn"
+            title="Download or preview updated CV"
+          >
+            <FileText size={14} />
+            <span>Resume</span>
+          </a>
+
           {/* Theme Toggle */}
           <button
             type="button"
@@ -93,15 +126,17 @@ export default function Navbar() {
           </button>
 
           {/* GitHub Icon */}
-          <a
-            href={personalInfo.socials.github}
-            target="_blank"
-            rel="noreferrer"
-            className="nav-icon-link"
-            aria-label="GitHub Profile"
-          >
-            <GithubIcon size={18} />
-          </a>
+          {personalInfo.socials?.github && (
+            <a
+              href={personalInfo.socials.github}
+              target="_blank"
+              rel="noreferrer"
+              className="nav-icon-link"
+              aria-label="GitHub Profile"
+            >
+              <GithubIcon size={18} />
+            </a>
+          )}
 
           {/* Contact CTA Button */}
           <a href="#contact" className="btn btn-primary btn-sm nav-cta">
@@ -139,6 +174,20 @@ export default function Navbar() {
                 </li>
               ))}
               <li className="mobile-nav-cta">
+                <a
+                  href={cvData.url || '#'}
+                  download={cvData.fileName}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn btn-outline btn-block mb-2"
+                  onClick={(e) => {
+                    handleCvClick(e);
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  <Download size={14} className="mr-1" />
+                  <span>Download CV / Resume</span>
+                </a>
                 <a
                   href="#contact"
                   className="btn btn-primary btn-block"

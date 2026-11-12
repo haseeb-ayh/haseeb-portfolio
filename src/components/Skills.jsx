@@ -3,15 +3,17 @@ import {
   Code2, 
   Server, 
   Database, 
-  ShieldCheck,
+  ShieldCheck, 
   Wrench, 
   Cpu,
   Layers,
-  FileCode
+  FileCode,
+  Plus
 } from 'lucide-react';
-import { technicalSkills } from '../data/portfolioData';
+import { usePortfolioData } from '../context/PortfolioDataContext';
 
 export default function Skills() {
+  const { technicalSkills, openAdmin } = usePortfolioData();
   const [activeTab, setActiveTab] = useState('all');
 
   const getCategoryIcon = (id) => {
@@ -38,7 +40,7 @@ export default function Skills() {
     ? technicalSkills
     : technicalSkills.filter((c) => c.id === activeTab);
 
-  const totalSkillsCount = technicalSkills.reduce((acc, c) => acc + c.skills.length, 0);
+  const totalSkillsCount = (technicalSkills || []).reduce((acc, c) => acc + (c.skills?.length || 0), 0);
 
   return (
     <section id="skills" className="section-container">
@@ -52,7 +54,7 @@ export default function Skills() {
           </div>
           <h2 className="section-main-title">Skills &amp; Technologies</h2>
           <p className="section-description">
-            Complete technical competencies from my resume covering programming languages, full-stack frameworks, database design, and security architectures.
+            Complete technical competencies covering programming languages, full-stack frameworks, database design, and security architectures.
           </p>
         </div>
 
@@ -72,9 +74,18 @@ export default function Skills() {
               className={`tab-btn ${activeTab === cat.id ? 'active' : ''}`}
               onClick={() => setActiveTab(cat.id)}
             >
-              {cat.category} ({cat.skills.length})
+              {cat.category} ({cat.skills?.length || 0})
             </button>
           ))}
+          <button
+            type="button"
+            className="tab-btn admin-quick-btn"
+            onClick={() => openAdmin('skills')}
+            title="Add or edit skills in Admin CMS"
+          >
+            <Plus size={13} />
+            <span>Manage Skills</span>
+          </button>
         </div>
 
         {/* Skill Category Cards */}
@@ -89,19 +100,21 @@ export default function Skills() {
                   </div>
                   <div>
                     <h3 className="cat-heading">{cat.category}</h3>
-                    <p className="cat-subtitle">{cat.skills.length} core competencies</p>
+                    <p className="cat-subtitle">{cat.skills?.length || 0} core competencies</p>
                   </div>
                 </div>
-                <span className="cat-count-badge">{cat.skills.length} skills</span>
+                <span className="cat-count-badge">{cat.skills?.length || 0} skills</span>
               </div>
 
               <div className="skill-items-grid">
-                {cat.skills.map((skill, sIdx) => (
+                {cat.skills?.map((skill, sIdx) => (
                   <div key={sIdx} className="skill-item-card">
                     <div className="skill-item-top">
                       <h4 className="skill-name">{skill.name}</h4>
                     </div>
-                    <p className="skill-desc-text">{skill.desc}</p>
+                    {skill.desc && (
+                      <p className="skill-desc-text">{skill.desc}</p>
+                    )}
                   </div>
                 ))}
               </div>

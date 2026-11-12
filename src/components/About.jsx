@@ -11,9 +11,11 @@ import {
   Code,
   Building2
 } from 'lucide-react';
-import { aboutData, personalInfo } from '../data/portfolioData';
+import { usePortfolioData } from '../context/PortfolioDataContext';
 
 export default function About() {
+  const { aboutData, personalInfo } = usePortfolioData();
+
   return (
     <section id="about" className="section-container">
       <div className="container">
@@ -37,7 +39,7 @@ export default function About() {
           <div className="about-profile-card">
             <div className="about-img-frame">
               <img 
-                src={personalInfo.images.about} 
+                src={personalInfo.images?.about || '/images/about.jpg'} 
                 alt={personalInfo.name} 
                 className="about-portrait-img"
                 onError={(e) => {
@@ -53,7 +55,11 @@ export default function About() {
               <div className="about-details-list">
                 <div className="detail-row">
                   <span className="detail-key">Current Role:</span>
-                  <span className="detail-val font-medium">Intern @ CorePro Techno</span>
+                  <span className="detail-val font-medium">{personalInfo.currentRole || 'Full Stack Developer Intern'}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-key">Company:</span>
+                  <span className="detail-val">{personalInfo.currentCompany || 'CorePro Techno, Kerala'}</span>
                 </div>
                 <div className="detail-row">
                   <span className="detail-key">Location:</span>
@@ -67,14 +73,14 @@ export default function About() {
                 </div>
                 <div className="detail-row">
                   <span className="detail-key">Phone:</span>
-                  <a href={`tel:${personalInfo.phone.replace(/\s+/g, '')}`} className="detail-val link">
+                  <a href={`tel:${(personalInfo.phone || '').replace(/\s+/g, '')}`} className="detail-val link">
                     {personalInfo.phone}
                   </a>
                 </div>
                 <div className="detail-row">
                   <span className="detail-key">Portfolio:</span>
                   <a href={personalInfo.portfolioUrl} target="_blank" rel="noreferrer" className="detail-val link">
-                    {personalInfo.portfolioUrl.replace('https://', '')}
+                    {(personalInfo.portfolioUrl || '').replace('https://', '')}
                   </a>
                 </div>
                 <div className="detail-row">
@@ -83,7 +89,7 @@ export default function About() {
                 </div>
                 <div className="detail-row">
                   <span className="detail-key">Education:</span>
-                  <span className="detail-val">Plus Two CS (2025)</span>
+                  <span className="detail-val">Plus Two CS & Brototype</span>
                 </div>
               </div>
             </div>

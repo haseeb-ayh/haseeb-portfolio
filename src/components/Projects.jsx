@@ -5,22 +5,24 @@ import {
   CheckCircle2, 
   Clock, 
   Calendar,
-  Layers
+  Layers,
+  Plus
 } from 'lucide-react';
 import { GithubIcon } from './Icons';
-import { projectsData } from '../data/portfolioData';
+import { usePortfolioData } from '../context/PortfolioDataContext';
 
 export default function Projects() {
+  const { projectsData, openAdmin } = usePortfolioData();
   const [filter, setFilter] = useState('All');
 
   const categories = ['All', 'Full-Stack', 'Front-End', 'Back-End'];
 
   const filteredProjects = filter === 'All'
     ? projectsData
-    : projectsData.filter((p) => p.category.toLowerCase().includes(filter.toLowerCase()));
+    : projectsData.filter((p) => p.category?.toLowerCase().includes(filter.toLowerCase()));
 
   const getStatusBadge = (status, statusType) => {
-    if (statusType === 'progress' || status.includes('Progress')) {
+    if (statusType === 'progress' || (status && status.includes('Progress'))) {
       return (
         <span className="repo-status-badge status-progress">
           <span className="repo-dot amber"></span>
@@ -31,7 +33,7 @@ export default function Projects() {
     return (
       <span className="repo-status-badge status-completed">
         <span className="repo-dot green"></span>
-        <span>{status}</span>
+        <span>{status || 'Completed'}</span>
       </span>
     );
   };
@@ -54,16 +56,28 @@ export default function Projects() {
 
         {/* Filter Pills */}
         <div className="filter-pills-bar">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              className={`filter-pill-btn ${filter === cat ? 'active' : ''}`}
-              onClick={() => setFilter(cat)}
-            >
-              {cat}
-            </button>
-          ))}
+          <div className="filter-pills-group">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                className={`filter-pill-btn ${filter === cat ? 'active' : ''}`}
+                onClick={() => setFilter(cat)}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={openAdmin}
+            className="filter-pill-btn admin-quick-btn"
+            title="Add or edit projects in Admin CMS"
+          >
+            <Plus size={13} />
+            <span>Manage Projects</span>
+          </button>
         </div>
 
         {/* Projects Grid */}
@@ -89,17 +103,19 @@ export default function Projects() {
               <p className="repo-desc-text">{project.description}</p>
 
               {/* Key Features from Resume & Architecture */}
-              <div className="repo-features-box">
-                <span className="features-label">Technical Highlights:</span>
-                <ul className="features-list">
-                  {project.bullets.map((b, i) => (
-                    <li key={i}>
-                      <span className="feature-check">✓</span>
-                      <span>{b}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {project.bullets && project.bullets.length > 0 && (
+                <div className="repo-features-box">
+                  <span className="features-label">Technical Highlights:</span>
+                  <ul className="features-list">
+                    {project.bullets.map((b, i) => (
+                      <li key={i}>
+                        <span className="feature-check">✓</span>
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               {/* Tech Stack Pills */}
               <div className="repo-tags-wrap">
@@ -112,7 +128,7 @@ export default function Projects() {
                     <span>{project.language}</span>
                   </span>
                 )}
-                {project.tech.map((t, idx) => (
+                {Array.isArray(project.tech) && project.tech.map((t, idx) => (
                   <span key={idx} className="tech-badge-chip">
                     {t}
                   </span>

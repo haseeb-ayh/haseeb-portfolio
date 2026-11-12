@@ -8,18 +8,33 @@ import {
   Mail, 
   ExternalLink,
   GraduationCap,
-  Globe
+  Globe,
+  Download,
+  FileText
 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon, TwitterIcon, InstagramIcon } from './Icons';
-import { personalInfo, aboutData } from '../data/portfolioData';
+import { usePortfolioData } from '../context/PortfolioDataContext';
 
 export default function Hero() {
+  const { personalInfo, aboutData, cvData, openAdmin } = usePortfolioData();
   const [copied, setCopied] = useState(false);
 
   const copyEmail = () => {
     navigator.clipboard.writeText(personalInfo.email);
     setCopied(true);
     setTimeout(() => setCopied(false), 2200);
+  };
+
+  const handleCvClick = (e) => {
+    if (!cvData.url) {
+      e.preventDefault();
+      const proceed = window.confirm(
+        'No CV / Resume is linked yet. Would you like to open the Admin CMS to upload your updated CV PDF now?'
+      );
+      if (proceed) {
+        openAdmin();
+      }
+    }
   };
 
   return (
@@ -35,53 +50,61 @@ export default function Hero() {
             <div className="hero-avatar-col">
               <div className="hero-avatar-wrapper">
                 <img 
-                  src={personalInfo.images.avatar} 
+                  src={personalInfo.images?.avatar || '/images/profile.jpg'} 
                   alt={personalInfo.name} 
                   className="hero-avatar-img"
                   onError={(e) => {
                     e.target.src = '/image/WhatsApp Image 2025-11-14 at 4.57.00 PM.jpeg';
                   }}
                 />
-                <span className="hero-online-status" title="Active Developer Intern"></span>
+                <span className="hero-online-status" title={personalInfo.availability || 'Active Developer'}></span>
               </div>
 
               <div className="hero-social-strip">
-                <a 
-                  href={personalInfo.socials.github} 
-                  target="_blank" 
-                  rel="noreferrer" 
-                  className="social-btn"
-                  title="GitHub"
-                >
-                  <GithubIcon size={16} />
-                </a>
-                <a 
-                  href={personalInfo.socials.linkedin} 
-                  target="_blank" 
-                  rel="noreferrer" 
-                  className="social-btn"
-                  title="LinkedIn"
-                >
-                  <LinkedinIcon size={16} />
-                </a>
-                <a 
-                  href={personalInfo.socials.twitter} 
-                  target="_blank" 
-                  rel="noreferrer" 
-                  className="social-btn"
-                  title="Twitter / X"
-                >
-                  <TwitterIcon size={16} />
-                </a>
-                <a 
-                  href={personalInfo.socials.instagram} 
-                  target="_blank" 
-                  rel="noreferrer" 
-                  className="social-btn"
-                  title="Instagram"
-                >
-                  <InstagramIcon size={16} />
-                </a>
+                {personalInfo.socials?.github && (
+                  <a 
+                    href={personalInfo.socials.github} 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className="social-btn"
+                    title="GitHub"
+                  >
+                    <GithubIcon size={16} />
+                  </a>
+                )}
+                {personalInfo.socials?.linkedin && (
+                  <a 
+                    href={personalInfo.socials.linkedin} 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className="social-btn"
+                    title="LinkedIn"
+                  >
+                    <LinkedinIcon size={16} />
+                  </a>
+                )}
+                {personalInfo.socials?.twitter && (
+                  <a 
+                    href={personalInfo.socials.twitter} 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className="social-btn"
+                    title="Twitter / X"
+                  >
+                    <TwitterIcon size={16} />
+                  </a>
+                )}
+                {personalInfo.socials?.instagram && (
+                  <a 
+                    href={personalInfo.socials.instagram} 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className="social-btn"
+                    title="Instagram"
+                  >
+                    <InstagramIcon size={16} />
+                  </a>
+                )}
               </div>
             </div>
 
@@ -91,7 +114,7 @@ export default function Hero() {
               <div className="hero-badge-row">
                 <span className="badge badge-success">
                   <span className="status-dot"></span>
-                  <span>Intern @ CorePro Techno</span>
+                  <span>{personalInfo.availability || 'Intern @ CorePro Techno • Open to Opportunities'}</span>
                 </span>
                 <span className="badge badge-neutral">MERN Full Stack</span>
               </div>
@@ -100,14 +123,18 @@ export default function Hero() {
               <p className="hero-role-title">{personalInfo.title}</p>
 
               <p className="hero-bio">
-                Building a <strong>Unified School Management ERP</strong> at <strong>CorePro Techno</strong> following MVC + Service architecture across 15 MongoDB collections. Trained through <strong>Brototype's intensive 52-week MERN programme</strong> with deep hands-on expertise in React, Node.js, Express, MongoDB, and Role-Based Access Control.
+                {personalInfo.shortBio || (
+                  <>
+                    Building a <strong>Unified School Management ERP</strong> at <strong>CorePro Techno</strong> following MVC + Service architecture across 15 MongoDB collections. Trained through <strong>Brototype's intensive 52-week MERN programme</strong> with deep hands-on expertise in React, Node.js, Express, MongoDB, and Role-Based Access Control.
+                  </>
+                )}
               </p>
 
               {/* Quick Meta Pills */}
               <div className="hero-meta-pills">
                 <span className="meta-pill">
                   <Briefcase size={13} />
-                  <span>CorePro Techno, Kerala</span>
+                  <span>{personalInfo.currentCompany || 'CorePro Techno, Kerala'}</span>
                 </span>
                 <span className="meta-pill">
                   <GraduationCap size={13} />
@@ -119,7 +146,7 @@ export default function Hero() {
                 </span>
                 <span className="meta-pill">
                   <Globe size={13} />
-                  <span>{personalInfo.portfolioUrl.replace('https://', '')}</span>
+                  <span>{(personalInfo.portfolioUrl || 'haseebpm.vercel.app').replace('https://', '')}</span>
                 </span>
               </div>
 
@@ -128,6 +155,20 @@ export default function Hero() {
                 <a href="#projects" className="btn btn-primary">
                   <span>View Projects</span>
                   <ArrowRight size={14} />
+                </a>
+
+                {/* Prominent Download CV Button */}
+                <a 
+                  href={cvData.url || '#'} 
+                  download={cvData.fileName || 'Abdul_Haseeb_MERN_Resume.pdf'}
+                  target="_blank" 
+                  rel="noreferrer" 
+                  className="btn btn-outline hero-cv-btn"
+                  onClick={handleCvClick}
+                  title="Download or view updated resume"
+                >
+                  <Download size={14} />
+                  <span>Download CV</span>
                 </a>
 
                 <a href="#experience" className="btn btn-outline">
@@ -151,7 +192,7 @@ export default function Hero() {
 
           {/* Bottom Stats Strip */}
           <div className="hero-stats-strip">
-            {aboutData.stats.map((stat, i) => (
+            {aboutData.stats?.map((stat, i) => (
               <div key={i} className="stat-item">
                 <span className="stat-number">{stat.value}</span>
                 <span className="stat-name">{stat.label}</span>
